@@ -36,41 +36,47 @@ export const checkUser = async (id) => {
         if (data.length > 0) {
             if (data[0].fingerprint !== null) return checkFp(data[0].fingerprint)
             updateOne("users",{ id_user: id }, { fingerprint: checkFp(data[0].fingerprint) })
-            postOne('setting', {
-                "id_user": data[0].id_user,
-                "setup": {
-                    "title": {
-                        "align": "left",
-                        "size": "10px",
-                        "width": "base",
-                        "type": "italic"
-                    },
-                    "image": {
-                        "align": "left",
-                        "size": "50%",
-                        "border": "15px"
-                    },
-                    "date": {
-                        "align": "left",
-                        "size": "10px",
-                        "width": "semibold"
-                    },
-                    "heroSection": {
-                        "enable": true,
-                        "size": "300px",
-                        "color": "#f3f3f3"
-                    },
-                    "background": {
-                        "color": "#f3f3f3"
-                    },
-                    "adsLocation": {
-                        "location": "top"
-                    },
-                    "content":{
-                        "align":"left"
-                    }
-                }})
-            return true
+            getData('setting',{filter:{id_user : id}}).then((res) => {
+                if(res.length > 0){
+                    return true
+                }else{
+                    postOne('setting', {
+                        "id_user": data[0].id_user,
+                        "setup": {
+                            "title": {
+                                "align": "left",
+                                "size": "10px",
+                                "width": "base",
+                                "type": "italic"
+                            },
+                            "image": {
+                                "align": "left",
+                                "size": "50%",
+                                "border": "15px"
+                            },
+                            "date": {
+                                "align": "left",
+                                "size": "10px",
+                                "width": "semibold"
+                            },
+                            "heroSection": {
+                                "enable": true,
+                                "size": "300px",
+                                "color": "#f3f3f3"
+                            },
+                            "background": {
+                                "color": "#f3f3f3"
+                            },
+                            "adsLocation": {
+                                "location": "top"
+                            },
+                            "content":{
+                                "align":"left"
+                            }
+                        }})
+                    return true
+                }
+            })
         } else {
             return false
         }

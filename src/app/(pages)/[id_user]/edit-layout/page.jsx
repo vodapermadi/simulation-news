@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react'
 const Page = ({params}) => {
     const [settings, setSettings] = useState([])
     const [content, setContent] = useState([])
+    const [loading,setLoading] = useState(true)
 
     useEffect(() => {
         window.document.addEventListener('contextmenu', (e) => {
@@ -16,18 +17,19 @@ const Page = ({params}) => {
 
         getContent(1).then((res) => {
             setContent(res.data)
+            getData('setting',{filter:{id_user: params.id_user}}).then((res) => {
+                setSettings(res[0])
+                setLoading(false)
+            })
         })
 
-        getData('setting',{filter:{id_user: params.id_user}}).then((res) => {
-            setSettings(res[0])
-        })
     }, [])
 
     return (
         <>
-            {settings !== undefined ? (
+            {!loading ? (
                 <div style={{
-                    backgroundColor:settings?.setup.background.color
+                    backgroundColor: settings?.setup.background.color
                 }} className='w-full flex justify-center relative pb-4'>
                     <div className='absolute top-12 right-2 z-50'>
                         <ButtonSetting settings={settings} setSettings={setSettings} />
