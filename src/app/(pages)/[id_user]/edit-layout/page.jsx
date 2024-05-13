@@ -32,7 +32,7 @@ const Page = ({params}) => {
                     backgroundColor: settings?.setup.background.color
                 }} className='w-full flex justify-center relative pb-4'>
                     <div className='absolute top-12 right-2 z-50'>
-                        <ButtonSetting settings={settings} setSettings={setSettings} />
+                        <ButtonSetting id={params.id_user} settings={settings} setSettings={setSettings} />
                     </div>
                     {settings.setup.heroSection.enable && (
                         <div style={{ height: settings.setup.heroSection.size, backgroundColor: settings.setup.heroSection.color }} className={`absolute bg-gray-400 w-full flex justify-center`}></div>

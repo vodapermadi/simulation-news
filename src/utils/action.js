@@ -32,45 +32,16 @@ export const checkUser = async (id) => {
                 "Content-Type": "application/json"
             }
         })
-
+        
         if (data.length > 0) {
-            if (data[0].fingerprint !== null) return checkFp(data[0].fingerprint)
-            updateOne("users",{ id_user: id }, { fingerprint: checkFp(data[0].fingerprint) })
-            postOne('setting', {
-                "id_user": data[0].id_user,
-                "setup": {
-                    "title": {
-                        "align": "left",
-                        "size": "10px",
-                        "width": "base",
-                        "type": "italic"
-                    },
-                    "image": {
-                        "align": "left",
-                        "size": "50%",
-                        "border": "15px"
-                    },
-                    "date": {
-                        "align": "left",
-                        "size": "10px",
-                        "width": "semibold"
-                    },
-                    "heroSection": {
-                        "enable": true,
-                        "size": "300px",
-                        "color": "#f3f3f3"
-                    },
-                    "background": {
-                        "color": "#f3f3f3"
-                    },
-                    "adsLocation": {
-                        "location": "top"
-                    },
-                    "content":{
-                        "align":"left"
-                    }
-                }})
-            return true
+            if (data[0].fingerprint === null) {
+                updateOne("users", { id_user: id }, { fingerprint: checkFp(data[0].fingerprint) }).then((res) => console.log(res))
+                return true
+            }
+
+            if(data[0].fingerprint !== null){
+                return checkFp(data[0].fingerprint)
+            }
         } else {
             return false
         }
@@ -151,11 +122,11 @@ export const deleteOne = async (col, filter) => {
     }
 }
 
-export const updateOne = async (col,fil, val) => {
+export const updateOne = async (col, fil, val) => {
     try {
         let newCFG = {
             ...config,
-            col:col,
+            col: col,
             fil: fil,
             val: val
         }

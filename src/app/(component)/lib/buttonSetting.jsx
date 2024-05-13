@@ -1,7 +1,8 @@
 "use client"
+import { updateOne } from '@/utils/action'
 import React, { useState } from 'react'
 
-const ButtonSetting = ({ settings, setSettings }) => {
+const ButtonSetting = ({ settings, setSettings,id }) => {
     const [open, setOpen] = useState(false)
 
     return (
@@ -124,7 +125,18 @@ const ButtonSetting = ({ settings, setSettings }) => {
                             </div>
                         </div>
                     </div>
-                    <button onClick={() => window.location.reload()} className='py-2 mt-2 bg-green-700 font-semibold text-white'>Save</button>
+                    <button onClick={() => {
+                        let newSetting = {
+                            ...settings
+                        }
+
+                        delete newSetting._id
+                        updateOne('setting',{id_user:id},newSetting).then(() => {
+                            setTimeout(() => {
+                                window.location.reload()
+                            },200)
+                        })
+                    }} className='py-2 mt-2 bg-green-700 font-semibold text-white'>Save</button>
                 </div>
             )}
         </>
