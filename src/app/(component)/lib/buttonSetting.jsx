@@ -1,19 +1,8 @@
 "use client"
 import React, { useState } from 'react'
 
-const ButtonSetting = () => {
-    const [open,setOpen] = useState(false)
-    const [settings, setSettings] = useState(sessionStorage.getItem('settings') === null ?
-        {
-            color: "",
-            height: 200,
-            alignContent: "left",
-            alignImage:"left",
-            size:25
-        }
-    : JSON.parse(sessionStorage.getItem('settings')))
-
-    sessionStorage.setItem("settings",JSON.stringify(settings))
+const ButtonSetting = ({ settings, setSettings }) => {
+    const [open, setOpen] = useState(false)
 
     return (
         <>
@@ -25,31 +14,117 @@ const ButtonSetting = () => {
 
             {open && (
                 <div className='w-[300px] flex justify-center flex-col bg-white mt-2 p-2 rounded'>
+                    {/* background color */}
                     <div className='w-full'>
-                        <h1>Background Height ({settings.height}px)</h1>
-                        <input type="range" min={200} max={500} value={settings.height} onChange={(e) => setSettings({...settings,height:parseInt(e.target.value)})} className='accent-red-500 w-full' />
+                        <span className='font-semibold text-lg'>Background</span>
+                        <div className='ml-4 mb-4'>
+                            <label className='text-sm font-semibold' htmlFor="color">Color</label>
+                            <input type="color" id='color' className='w-full' value={settings.setup.background.color} onChange={(e) => setSettings({
+                                ...settings,
+                                setup: {
+                                    ...settings.setup,
+                                    background: {
+                                        ...settings.setup.background,
+                                        color: e.target.value
+                                    }
+                                }
+                            })} />
+                        </div>
+
+                        {/* title */}
+                        <span className='font-semibold text-lg'>Title</span>
+                        <div className='ml-4'>
+                            <label className='text-sm font-semibold' htmlFor="align">Align text</label>
+                            <select id='align' className='w-full my-2' value={settings.setup.title.align} onChange={(e) => setSettings({
+                                ...settings,
+                                setup: {
+                                    ...settings.setup,
+                                    title: {
+                                        ...settings.setup.title,
+                                        align: e.target.value
+                                    }
+                                }
+                            })}>
+                                <option value="left">Left</option>
+                                <option value="center">Center</option>
+                                <option value="right">Right</option>
+                            </select>
+
+                            <label className='text-sm font-semibold mt-1' htmlFor="size">Font Size</label>
+                            <input type="range" id='size' min={10} className='w-full my-2' value={parseInt(settings.setup.title.size.replace('px', ''))} onChange={(e) => setSettings({
+                                ...settings,
+                                setup: {
+                                    ...settings.setup,
+                                    title: {
+                                        ...settings.setup.title,
+                                        size: String(e.target.value) + "px"
+                                    }
+                                }
+                            })} />
+
+                            <label className='text-sm font-semibold mt-1' htmlFor="style">Font Style</label>
+                            <select id='style' className='w-full my-2' value={settings.setup.title.type} onChange={(e) => setSettings({
+                                ...settings,
+                                setup: {
+                                    ...settings.setup,
+                                    title: {
+                                        ...settings.setup.title,
+                                        type: e.target.value
+                                    }
+                                }
+                            })}>
+                                <option value="normal">Normal</option>
+                                <option value="italic">Italic</option>
+                            </select>
+
+                            <label className='text-sm font-semibold mt-1' htmlFor="size">Font weight</label>
+                            <input type="range" id='size' min={100} step={100} max={1000} className='w-full my-2' value={parseInt(settings.setup.title.width)} onChange={(e) => setSettings({
+                                ...settings,
+                                setup: {
+                                    ...settings.setup,
+                                    title: {
+                                        ...settings.setup.title,
+                                        width: parseInt(e.target.value)
+                                    }
+                                }
+                            })} />
+
+                            {/* image */}
+                            <span className='font-semibold text-lg'>Image</span>
+                            <div className='ml-4 mb-4'>
+                                <label className='text-sm font-semibold' htmlFor="imagePosition">Image Position</label>
+                                <select id='imagePosition' className='w-full my-2' value={settings.setup.image.align} onChange={(e) => setSettings({
+                                    ...settings,
+                                    setup: {
+                                        ...settings.setup,
+                                        image: {
+                                            ...settings.setup.image,
+                                            align: e.target.value
+                                        }
+                                    }
+                                })}>
+                                    <option value="left">Left</option>
+                                    <option value="center">Center</option>
+                                    <option value="right">Right</option>
+                                </select>
+                            </div>
+
+                            <div className='ml-4 mb-4'>
+                                <label className='text-sm font-semibold mt-1' htmlFor="imagesize">Image Size</label>
+                                <input type="range" id='imagesize' min={10} className='w-full my-2' value={parseInt(settings.setup.image.size.replace('%', ''))} onChange={(e) => setSettings({
+                                    ...settings,
+                                    setup: {
+                                        ...settings.setup,
+                                        image: {
+                                            ...settings.setup.image,
+                                            size: String(e.target.value) + "%"
+                                        }
+                                    }
+                                })} />
+                            </div>
+                        </div>
                     </div>
-                    <div className='w-full'>
-                        <h1>Background Color</h1>
-                        <input type="color" min={200} max={500} value={settings.color} onChange={(e) => setSettings({ ...settings, color: e.target.value })} className='accent-red-500 w-full' />
-                    </div>
-                    <div className='w-full'>
-                        <h1>Image size</h1>
-                        <select value={settings.size} onChange={(e) => setSettings({ ...settings, size: e.target.value })} className='w-full py-2'>
-                            <option value={25}>25%</option>
-                            <option value={50}>50%</option>
-                            <option value={100}>100%</option>
-                        </select>
-                    </div>
-                    <div className='w-full'>
-                        <h1>Align text</h1>
-                        <select value={settings.align} onChange={(e) => setSettings({ ...settings, align: e.target.value })} className='w-full py-2'>
-                            <option value="left">Left</option>
-                            <option value="center">Center</option>
-                            <option value="right">Right</option>
-                        </select>
-                    </div>
-                    <button onClick={() => window.location.reload()} className='py-2 bg-green-700 font-semibold text-white'>Save</button>
+                    <button onClick={() => window.location.reload()} className='py-2 mt-2 bg-green-700 font-semibold text-white'>Save</button>
                 </div>
             )}
         </>

@@ -24,9 +24,9 @@ const layout = ({ children }) => {
             if (e.key == 123) {
                 e.preventDefault();
             }
-            if (e.ctrlKey && e.shiftKey && e.key == 'I') {
-                e.preventDefault();
-            }
+            // if (e.ctrlKey && e.shiftKey && e.key == 'I') {
+            //     e.preventDefault();
+            // }
             if (e.ctrlKey && e.shiftKey && e.key == 'C') {
                 e.preventDefault();
             }

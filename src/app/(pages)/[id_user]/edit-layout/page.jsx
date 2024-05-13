@@ -1,11 +1,12 @@
 "use client"
 import { ButtonSetting, Loading } from '@/app/(component)'
+import { getData } from '@/utils/action'
 import { getContent } from '@/utils/content'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 
-const Page = () => {
-    const [settings, setSettings] = useState(null)
+const Page = ({params}) => {
+    const [settings, setSettings] = useState([])
     const [content, setContent] = useState([])
 
     useEffect(() => {
@@ -15,43 +16,41 @@ const Page = () => {
 
         getContent(1).then((res) => {
             setContent(res.data)
-            console.log(res.data)
         })
 
-        const storedSettings = JSON.parse(sessionStorage.getItem('settings'));
-        if (storedSettings !== null) {
-            setSettings(storedSettings);
-        } else {
-            const defaultSettings = {
-                color: "",
-                height: 200,
-                alignContent: "left",
-                alignImage: "left",
-                size: 25
-            }
-            setSettings(defaultSettings);
-            sessionStorage.setItem('settings', JSON.stringify(defaultSettings));
-        }
+        getData('setting',{filter:{id_user: params.id_user}}).then((res) => {
+            setSettings(res[0])
+        })
     }, [])
 
     return (
         <>
-            {settings !== null ? (
-                <div className='w-full flex justify-center relative bg-gray-100'>
+            {settings !== undefined ? (
+                <div style={{
+                    backgroundColor:settings?.setup.background.color
+                }} className='w-full flex justify-center relative pb-4'>
                     <div className='absolute top-12 right-2 z-50'>
-                        <ButtonSetting />
+                        <ButtonSetting settings={settings} setSettings={setSettings} />
                     </div>
-                    <div style={{ height: settings.height, backgroundColor: settings.color }} className={`absolute bg-gray-400 w-full flex justify-center`}>
-                    </div>
-                    <div className='w-5/6 bg-white p-4 indent-4 rounded shadow-lg z-10 mt-4'>
-                        <h1 className='font-semibold text-2xl' dangerouslySetInnerHTML={{ __html: content[0]?.title.replace('\n', '<p>') }}></h1>
+                    {settings.setup.heroSection.enable && (
+                        <div style={{ height: settings.setup.heroSection.size, backgroundColor: settings.setup.heroSection.color }} className={`absolute bg-gray-400 w-full flex justify-center`}></div>
+                    )}
+                    <div className='w-5/6 bg-white p-4 rounded shadow-lg z-10 mt-4'>
+                        <h1 className='font-semibold w-full' style={{
+                            textAlign:settings.setup.title.align,
+                            fontSize:settings.setup.title.size,
+                            fontStyle:settings.setup.title.type,
+                            fontWeight:settings.setup.title.width
+                        }} dangerouslySetInnerHTML={{ __html: content[0]?.title.replace('\n', '<p>') }}></h1>
                         <span className='font-semibold text-sm'>{content[0]?.date}</span>
                         {content?.length > 0 && content[0]?.img !== null && (
-                            <div className='my-4'>
-                                <Image priority src={content[0].img} alt={content[0]?.title.replace('\n', '')} width={500} height={500} style={{ width: `${settings.size}%`, height: "auto" }} />
+                            <div className='my-2 w-full flex items-center' style={{
+                                justifyContent:settings.setup.image.align
+                            }}>
+                                <Image priority src={content[0].img} alt={content[0]?.title.replace('\n', '')} width={500} height={500} style={{ width: `${settings.setup.image.size}`, height: "auto", borderRadius:`${settings.setup.image.border}` }} />
                             </div>
                         )}
-                        <div style={{ textAlign: settings.align }} dangerouslySetInnerHTML={{ __html: content[0]?.content.replace('\n', '<br/><br/><p>') }}></div>
+                        <div style={{ textAlign: settings.setup.content.align }} className='indent-4' dangerouslySetInnerHTML={{ __html: content[0]?.content.replace('\n', '<br/><br/><p>') }}></div>
                     </div>
                 </div>
             ) : (
